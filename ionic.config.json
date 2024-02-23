@@ -1,0 +1,7 @@
+{
+  "name": "MyWhats",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
