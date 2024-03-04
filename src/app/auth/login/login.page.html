@@ -1,0 +1,61 @@
+<app-header [title]="'Hi'"></app-header>
+
+<ion-content>
+
+  <ion-icon name="magnet-sharp" style="font-size: 800%;"></ion-icon>
+  <H1 style="margin-top: 0px;"><strong>Mag Shops</strong></H1>
+
+    <form [formGroup]="this.form">
+      <ion-item lines="none" class="ion-margin-top">
+        <ion-icon color="primary" slot="start" name="mail"></ion-icon>
+        <ion-input formControlName="email" name="email" clearInput="true" 
+        type="email" placeholder="Email"></ion-input>
+      </ion-item>
+
+      @if (!this.form.controls['email'].valid && (this.form.controls['email'].touched)) 
+      {
+        @if (this.form.controls['email'].errors!['required'])
+        {
+          <ion-note>Este campo no puede estar vacio</ion-note>  
+        } 
+        @else if (this.form.controls['email'].errors!['email']) 
+        {
+          <ion-note>El mail ingresado no es valido</ion-note>  
+        }
+      }
+
+      <ion-item lines="none" class="ion-margin-top">
+        <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
+        <ion-input formControlName="password" name="password" clearInput="true" 
+        [type]="this.showPassword ? 'text' : 'password'" placeholder="Password"></ion-input>
+
+        <ion-button (click)="this.showOrHidePassword()" fill="clear" shape="round">
+          <ion-icon color="primary" slot="icon-only"
+          [name]="this.showPassword ? 'eye-outline' : 'eye-off-outline' "></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      @if (!this.form.controls['password'].valid && (this.form.controls['password'].touched)) 
+      {
+        @if (this.form.controls['password'].errors!['required'])
+        {
+          <ion-note>Este campo no puede estar vacio</ion-note>  
+        }
+        @else if (!this.form.controls['password'].errors!['minLength']) 
+        {
+          <ion-note>La clave no puede tener menos de 10 caracteres</ion-note>  
+        }
+      }
+
+      <ion-button class="ion-margin-top" color="primary" expand="block" fill="solid" shape="round">
+        Log In <ion-icon slot="end" name="log-in-outline"></ion-icon>
+      </ion-button>
+    </form>
+
+    <ion-button class="ion-margin-top" color="primary" expand="block" fill="outline" shape="round"
+    routerLink="register">
+      Register
+      <ion-icon slot="end" name="person-add-outline"></ion-icon>
+    </ion-button>
+
+</ion-content> 
