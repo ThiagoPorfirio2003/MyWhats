@@ -1,0 +1,12 @@
+/*
+.toast-error{
+    .toast-wrapper
+    {
+        background: red;
+    } 
+}
+*/
+ion-toast.toastError
+{
+    --color: rgb(255, 0, 0);
+}

@@ -1,0 +1,15 @@
+<app-header [title]="this.headerTittle"/>
+
+<ion-content> 
+    <ion-icon name="magnet-sharp" style="font-size: 50px;"></ion-icon>
+    <H1 style="margin-top: 0px;"><strong>Mag Shops</strong></H1>
+
+    @if(this.showAccessDataForm)
+    {
+        <app-user-access-data-form (submitDataEventEmitter)="this.receiveAccessData($event)" [isLogin]="true"></app-user-access-data-form>
+    }
+    @else {
+        <app-user-personal-data-form (submitDataEvetEmiter)="this.receivePersonalData($event)"></app-user-personal-data-form>
+    }
+</ion-content>
+

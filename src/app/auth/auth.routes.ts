@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
-import { LoginPage } from './login/login.page';
-import { RegisterPage } from './register/register.page';
+import { AuthPage } from './auth.page';
 
 
 export const AUTH_ROUTES: Routes = 
 [
-  { path: '',component:LoginPage },  
-  { path: 'register', component: RegisterPage}
+  { path: '',component:AuthPage, children:
+    [
+      { path: 'a', loadComponent: () => import('./user-access-data-form/user-access-data-form.component').then(c => c.UserAccessDataFormComponent) },
+    ]
+  },  
 ];

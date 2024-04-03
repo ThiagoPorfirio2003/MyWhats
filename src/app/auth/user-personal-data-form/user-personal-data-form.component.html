@@ -1,0 +1,112 @@
+<!-- 
+<ion-icon name="save-outline"></ion-icon>
+
+-->
+<form [formGroup]="this.userPersonalDataForm">
+  <ion-item lines="none" class="ion-margin-top">
+    <ion-input label="Real name" formControlName="realName" name="realName" placeholder="Thiago Lisandro" clearInput="true" type="text">
+    </ion-input>
+  </ion-item>
+
+  @if (!this.userPersonalDataForm.controls['realName'].valid && (this.userPersonalDataForm.controls['realName'].touched)) 
+  {
+    @if (this.userPersonalDataForm.controls['realName'].errors!['required'])
+    {
+      <ion-note>Este campo no puede estar vacio</ion-note>  
+    }
+    @else{
+      
+      @if (this.userPersonalDataForm.controls['realName'].errors!['minlength']) 
+      {
+        <ion-note>El nombre no puede tener menos de 10 caracteres<br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['realName'].errors!['maxlength']) 
+      {
+        <ion-note>El nombre no puede tener más de 40 caracteres<br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['realName'].errors!['pattern']) 
+      {
+        <ion-note>El nombre solo puede poseer letras y espacios<br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['realName'].errors!['hayEspacioInicial']) 
+      {
+        <ion-note>El primer caracter no puede ser un espacio</ion-note>  
+      }
+    } 
+  }
+
+  <ion-item lines="none" class="ion-margin-top">
+    <ion-input label="Surname" formControlName="surname" name="surname" placeholder="Porfirio" clearInput="true" type="text">
+    </ion-input>
+  </ion-item>
+
+  @if (!this.userPersonalDataForm.controls['surname'].valid && (this.userPersonalDataForm.controls['surname'].touched)) 
+  {
+    @if (this.userPersonalDataForm.controls['surname'].errors!['required'])
+    {
+      <ion-note>Este campo no puede estar vacio</ion-note>  
+    }
+    @else{
+
+      @if (this.userPersonalDataForm.controls['surname'].errors!['minlength']) 
+      {
+        <ion-note>El apellido no puede tener menos de 10 caracteres <br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['surname'].errors!['maxlength']) 
+      {
+        <ion-note>El apellido no puede tener más de 40 caracteres <br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['surname'].errors!['pattern']) 
+      {
+        <ion-note>El apellido solo puede poseer letras y espacios <br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['surname'].errors!['hayEspacioInicial']) 
+      {
+        <ion-note>El primer caracter no puede ser un espacio</ion-note>  
+      }
+    } 
+  }
+
+  <ion-item lines="none" class="ion-margin-top">
+    <ion-input label="User name" formControlName="userName" name="userName" placeholder="Lisandro_2003" clearInput="true" type="text">
+    </ion-input>
+  </ion-item>
+
+  @if (!this.userPersonalDataForm.controls['userName'].valid && (this.userPersonalDataForm.controls['userName'].touched)) 
+  {
+    @if (this.userPersonalDataForm.controls['userName'].errors!['required'])
+    {
+      <ion-note>Este campo no puede estar vacio</ion-note>  
+    }
+    @else{
+
+      @if (this.userPersonalDataForm.controls['userName'].errors!['minlength']) 
+      {
+        <ion-note>El nombre de usuario no puede tener menos de 10 caracteres <br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['userName'].errors!['maxlength']) 
+      {
+        <ion-note>El nombre de usuario no puede tener más de 30 caracteres <br></ion-note>  
+      }
+
+      @if (this.userPersonalDataForm.controls['userName'].errors!['pattern'])
+      {
+        <ion-note>El nombre de usuario solo puede tener letras, numeros y _</ion-note>  
+
+      }
+    } 
+  }
+
+  <ion-button class="ion-margin-top" color="primary" expand="block" fill="solid" shape="round"
+  (click)="this.submitData()">
+    Register
+    <ion-icon slot="end" name="person-add-outline"></ion-icon>
+  </ion-button>
+</form>

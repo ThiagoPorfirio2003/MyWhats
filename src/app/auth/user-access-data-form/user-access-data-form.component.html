@@ -1,0 +1,80 @@
+<form [formGroup]="this.loginForm">
+  <ion-item lines="none" class="ion-margin-top">
+    <ion-icon color="primary" slot="start" name="mail"></ion-icon>
+    <ion-input formControlName="email" name="email" clearInput="true" 
+    type="email" placeholder="Email"></ion-input>
+  </ion-item>
+
+  @if (!this.loginForm.controls['email'].valid && (this.loginForm.controls['email'].touched)) 
+  {
+    @if (this.loginForm.controls['email'].errors!['required'])
+    {
+      <ion-note>Este campo no puede estar vacio</ion-note>  
+    } 
+    @else if (this.loginForm.controls['email'].errors!['email']) 
+    {
+      <ion-note>El mail ingresado no es valido</ion-note>  
+    }
+  }
+
+  <ion-item lines="none" class="ion-margin-top">
+    <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
+    <ion-input formControlName="password" name="password" clearInput="true" 
+    [type]="this.showPassword ? 'text' : 'password'" placeholder="Password"></ion-input>
+
+    <ion-button (click)="this.showPassword = !this.showPassword" fill="clear" shape="round">
+      <ion-icon color="primary" slot="icon-only"
+      [name]="this.showPassword ? 'eye-outline' : 'eye-off-outline' "></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  @if (!this.loginForm.controls['password'].valid && (this.loginForm.controls['password'].touched)) 
+  {
+    @if (this.loginForm.controls['password'].errors!['required'])
+    {
+      <ion-note>Este campo no puede estar vacio</ion-note>  
+    }
+    @else if (!this.loginForm.controls['password'].errors!['minLength']) 
+    {
+      <ion-note>La clave no puede tener menos de 10 caracteres</ion-note>  
+    }
+  }
+
+  @if (!this.isLogin)
+  {
+    <ion-item lines="none" class="ion-margin-top">
+      <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
+      <ion-input formControlName="rePassword" name="rePassword" clearInput="true" 
+      [type]="this.showRePassword ? 'text' : 'password'" placeholder="Repeat the password"></ion-input>
+
+      <ion-button (click)="this.showRePassword = !this.showRePassword" fill="clear" shape="round">
+        <ion-icon color="primary" slot="icon-only"
+        [name]="this.showRePassword ? 'eye-outline' : 'eye-off-outline' "></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    @if (!this.loginForm.controls['rePassword'].valid && (this.loginForm.controls['rePassword'].touched)) 
+    {
+      @if (this.loginForm.controls['rePassword'].errors!['required'])
+      {
+        <ion-note>Este campo no puede estar vacio</ion-note>  
+      }
+      @else if (!this.loginForm.controls['rePassword'].errors!['minLength']) 
+      {
+        <ion-note>La clave no puede tener menos de 10 caracteres</ion-note>  
+      }
+    }
+  }
+
+  <ion-button (click)="this.submitData()" class="ion-margin-top" color="primary" expand="block" fill="solid" shape="round">
+    {{this.principalButtonText}}
+    <ion-icon slot="end" [name]='this.principalButtonIconName'></ion-icon>
+  </ion-button>
+</form>
+
+    
+<ion-button class="ion-margin-top" color="primary" expand="block" fill="outline" shape="round"
+routerLink="register" (click)="this.changeFormState(!this.isLogin)">
+    {{this.secondaryButtonText}}
+  <ion-icon slot="end" [name]="this.secondaryButtonIconName"></ion-icon>
+</ion-button>

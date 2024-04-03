@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "mymag-dac6f": {
+      "hosting": {
+        "app": [
+          "mymag-dac6f"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "mymag-dac6f"
+  }
+}
