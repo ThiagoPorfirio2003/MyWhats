@@ -1,0 +1,7 @@
+{
+  "name": "MagShops",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
