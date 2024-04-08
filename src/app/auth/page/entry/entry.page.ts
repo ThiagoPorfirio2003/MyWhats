@@ -5,7 +5,8 @@ import { magnetSharp } from 'ionicons/icons';
 import { MyMessage } from 'src/app/core/models/message.model';
 import { MyOutPutData } from 'src/app/core/models/outPutInfo.model';
 import { UserAccessData, UserModel, UserPersonalData } from 'src/app/core/models/user.model';
-import { FirebaseService } from 'src/app/core/services/firebase.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { DatabaseService } from 'src/app/core/services/database.service';
 import { UtilsService } from 'src/app/core/services/utils.service';
 
 @Component({
@@ -19,7 +20,8 @@ export class EntryPage{
   public showAccessDataForm : boolean;
 
   constructor(private utilsServices : UtilsService,
-    private firebaseService : FirebaseService) 
+    private authService : AuthService,
+    private databaseService : DatabaseService) 
   { 
     addIcons({magnetSharp});
     this.headerTittle = 'Log In'
@@ -43,9 +45,9 @@ export class EntryPage{
       {
         try
         {
-          const userCredential = await this.firebaseService.logIn(userAccessData.data);
+          const userCredential = await this.authService.logIn(userAccessData.data);
 
-          const doc = await this.firebaseService.getDocRef('users', userCredential.user.uid);
+          const doc = await this.databaseService.getDocRef('users', userCredential.user.uid);
 
           if(doc.exists())
           {
@@ -98,7 +100,7 @@ export class EntryPage{
       }
       else
       {
-        this.firebaseService.register(userAccessData.data)
+        this.authService.register(userAccessData.data)
         .then(()=>
         {
           loading.dismiss();
@@ -122,15 +124,15 @@ export class EntryPage{
       
       await loading.present();
 
-      const authUser : User = this.firebaseService.getCurrentUser()!;
+      const authUser : User = this.authService.getCurrentUser()!;
 
       try
       {
         const newUser = await this.saveUserData(personalDataPackage.data, authUser.uid, authUser.email!);
 
-        this.firebaseService.updateUserProfile(authUser, newUser.userName, newUser.image.url);
+        this.authService.updateUserProfile(authUser, newUser.userName, newUser.image.url);
 
-        await this.firebaseService.sendEmailVerification()
+        await this.authService.sendEmailVerification()
 
         loading.dismiss();
         this.utilsServices.showAlert({header:'Registro terminado', content:'Ahora solo falta verificar tu cuenta via tu mail'})
@@ -161,6 +163,6 @@ export class EntryPage{
     newUser.uid = uid;
     newUser.email = email;
 
-    return this.firebaseService.saveNewUserData(newUser);
+    return this.databaseService.saveNewUserData(newUser);
   }
 }
