@@ -1,0 +1,23 @@
+ion-content {
+    --background: #ffffff;
+    --padding-end: 5%;
+    --padding-start: 5%;
+    --padding-top: 1%;
+    align-items: center;
+}
+
+.logo
+{
+    text-align: center;
+    color: #000;
+}
+
+.toast-custom-class {
+    --color:#ffffff;
+    --border-color:#000000;
+    --border-radius:3px;
+    --border-style:solid;
+    --border-width:3px;    
+    --background:#1833FF;
+    --button-color:#ffffff;
+}

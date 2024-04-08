@@ -1,0 +1,16 @@
+<ion-content [fullscreen]="true" class=" ion-align-items-center">
+  <div style="height: 100%; width: 100%;display: flex; justify-content: center;align-items: center; flex-direction: column;">
+      <div class="ion-text-center logo">
+        <ion-icon name="magnet-sharp" style="font-size: 1000%;"></ion-icon>
+        <H1 style="margin-top: 0px;"><strong>Mag Shops</strong></H1>
+      </div>
+      
+      @if (this.showAccessDataForm) 
+      {
+        <app-access-data-form [isLogin]="this.showAccessDataForm" (submitDataEventEmitter)="this.receiveAccessData($event)"></app-access-data-form>
+      }
+      @else {
+        <app-personal-data-form (submitDataEvetEmiter)="this.receivePersonalData($event)"></app-personal-data-form>
+      }
+  </div>
+</ion-content>
