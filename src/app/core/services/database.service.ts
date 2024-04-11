@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { setDoc, doc, Firestore, getDoc, collection, runTransaction, query, getDocs, limit, where } 
+import { setDoc, doc, Firestore, getDoc, collection, runTransaction, query, getDocs, limit, where, DocumentReference } 
 from '@angular/fire/firestore';
 import { UserAccessData, UserModel } from '../models/user.model';
 import { CollectionName } from '../myTypes/collectionsNames';
-import { MyMessage } from '../models/message.model';
+import { MyStatus } from '../models/status.model';
 
 
 @Injectable({
@@ -29,10 +29,9 @@ export class DatabaseService {
     return getDoc(doc(this.firestore, collectionName, idDoc));
   }
 
-    /*
+  
   public saveData(collectionName : CollectionName, data : any, id? : string)
   {
-    
     let docRef;
 
     if(id)
@@ -41,14 +40,13 @@ export class DatabaseService {
       docRef = doc(this.firestore, collectionName, id);
     }
     else
-    {
-      docRef = doc(this.firestore, collectionName)
-      data.id = docRef.id
+    {   
+      docRef = doc(this.firestore, collectionName);
+      data.id = docRef.id;
     }
 
     return setDoc(docRef, data);
   }
-  */
   
   public async saveNewUserData(newUser : UserModel) : Promise<UserModel>
   {
@@ -72,7 +70,7 @@ export class DatabaseService {
     {
       if(error)
       {
-        reject(error as MyMessage)
+        reject(error)
       }
       else
       {
@@ -93,7 +91,7 @@ export class DatabaseService {
         
         if(docUserNameSnap.exists()) 
         {
-          const messageError : MyMessage = {header: 'Nombre ya usado', content: 'Eliga otro nombre de usuario'}
+          const messageError : MyStatus = {header: 'Nombre ya usado', message: 'Eliga otro nombre de usuario', success: false}
           throw messageError;
         } 
         else 

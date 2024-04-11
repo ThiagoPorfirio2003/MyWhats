@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AlertController, ToastController, LoadingController, SpinnerTypes } from '@ionic/angular';
-import { MyMessage } from '../models/message.model';
+import { AlertController, ToastController, LoadingController, SpinnerTypes, AlertOptions, ToastOptions } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,65 +9,30 @@ export class UtilsService {
 
   constructor(private toastController : ToastController, 
     private alertController : AlertController,
-    private loadingController : LoadingController) { }
+    private loadingController : LoadingController,
+    private router : Router) { }
 
-  public getToast(message : MyMessage, duration : number, 
-    position? : "top" | "bottom" | "middle" | undefined,
-    cssClass?: string | string[] | undefined)
+  public getToast(toastOptions : ToastOptions)
   {
-    return this.toastController.create(
-      {
-        header: message.header,
-        message: message.content,
-        duration: duration,
-        position: position,
-        cssClass: cssClass,
-      }
-    )
+    return this.toastController.create(toastOptions);
   }
 
-  public showToast(message : MyMessage, duration : number, 
-    position? : "top" | "bottom" | "middle" | undefined,
-    cssClass?: string | string[] | undefined)
+  public showToast(toastOptions : ToastOptions)
   {
-    this.getToast(message, duration, position, cssClass)
+    this.getToast(toastOptions)
     .then((toast)=> toast.present())
   }
 
-  public getAlert(message : MyMessage,
-    cssClass?: string | string[] | undefined)
+  public getAlert(alertOptions : AlertOptions)
   {
-    return this.alertController.create(
-      {
-        header: message.header,
-        message: message.content,
-        cssClass: cssClass,
-        buttons: ['Ok']
-      }
-    )
+    return this.alertController.create(alertOptions)
   }
    
-  public showAlert(message : MyMessage,
-    cssClass?: string | string[] | undefined)
+  public showAlert(alertOptions : AlertOptions)
   {
-    this.getAlert(message, cssClass)
+    this.getAlert(alertOptions)
     .then((ale)=> ale.present())
   }
-
-  /*
-  public async showAlert() 
-  {
-    
-    const alert = await this.alertController.create({
-      header: 'A Short Title Is Best',
-      subHeader: 'A Sub Header Is Optional',
-      message: 'A message should be a short, complete sentence.',
-      buttons: ['Action'],
-    });
-
-    await alert.present();
-  }
-  */
 
   public getLoadingCtrl(spinnerName : SpinnerTypes, message? : string, duration? : number, cssClass? : string)
   {
@@ -79,5 +44,15 @@ export class UtilsService {
       cssClass: cssClass,
     }
     )
+  }
+
+  public changeRoute(newRoute : string)
+  {
+    this.router.navigate([newRoute]);
+  }
+
+  public getRoute()
+  {
+    return this.router.url;
   }
 }

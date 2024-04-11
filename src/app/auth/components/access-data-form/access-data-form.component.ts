@@ -1,9 +1,10 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { MyOutPutData } from 'src/app/core/models/outPutInfo.model';
 import { UserAccessData } from 'src/app/core/models/user.model';
-import { eyeOffOutline, eyeOutline, lockClosed, logInOutline, mail, personAddOutline } from 'ionicons/icons';
+import { eyeOffOutline, eyeOutline, flag, lockClosed, logInOutline, mail, personAddOutline } from 'ionicons/icons';
+import { MyFormResponse } from 'src/app/core/models/form.model';
+import { MyStatus } from 'src/app/core/models/status.model';
 
 @Component({
   selector: 'app-access-data-form',
@@ -13,7 +14,7 @@ import { eyeOffOutline, eyeOutline, lockClosed, logInOutline, mail, personAddOut
 export class AccessDataFormComponent  implements OnInit {
 
   @Input() isLogin! : boolean;
-  @Output() submitDataEventEmitter : EventEmitter<MyOutPutData<UserAccessData>>;
+  @Output() submitDataEventEmitter : EventEmitter<MyFormResponse<UserAccessData>>;
 
   public principalButtonText : string;
   public principalButtonIconName : string;
@@ -44,7 +45,7 @@ export class AccessDataFormComponent  implements OnInit {
       rePassword: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(30)]],
     })
     
-    this.submitDataEventEmitter = new EventEmitter<MyOutPutData<UserAccessData>>();
+    this.submitDataEventEmitter = new EventEmitter<MyFormResponse<UserAccessData>>();
   }
 
   ngOnInit(): void 
@@ -78,48 +79,47 @@ export class AccessDataFormComponent  implements OnInit {
     this.changeButtonsText(isLogin);
   }
 
-  public submitData()
+  private validateData() : MyStatus
   {
-    let userAccessData : MyOutPutData<UserAccessData>;
-    let isDataValid : boolean;
-    
-    userAccessData = {} as MyOutPutData<UserAccessData>;
-    isDataValid = this.loginForm.controls['email'].valid && this.loginForm.controls['password'].valid;
-
-    userAccessData.message = {header: 'EXITO', content: 'Los datos ingresados cumplen con los requisitos'};
-
-    if(isDataValid)
+    const formStatus : MyStatus = 
     {
+      header: 'DATOS INVALIDO',
+      message: 'Los datos ingresados NO cumplen con las condiciones',
+      success: this.loginForm.controls['email'].valid && this.loginForm.controls['password'].valid,
+    };
+
+    if(formStatus.success)
+    {
+      formStatus.header = 'EXITO';
+      formStatus.message = 'Los datos ingresados cumplen con los requisitos'
+
       if(!this.isLogin)
       {
-        isDataValid = this.loginForm.controls['rePassword'].valid;
-
-        if(isDataValid)
+        formStatus.success = this.loginForm.controls['rePassword'].valid;
+        
+        if(formStatus.success)
         {
-          isDataValid = this.loginForm.controls['rePassword'].value === this.loginForm.controls['password'].value;
-
-          if(!isDataValid)
+          formStatus.success = this.loginForm.controls['rePassword'].value === this.loginForm.controls['password'].value;
+          
+          if(!formStatus.success)
           {
-            userAccessData.message.header = 'CLAVES DISTINTAS';
-            userAccessData.message.content = 'Las 2 claves ingresadas TIENES que ser iguales'
+            formStatus.header = 'CLAVES DISTINTAS';
+            formStatus.message = 'Las 2 claves ingresadas TIENES que ser iguales'
           }
-        }
-        else
-        {
-          userAccessData.message.header = 'DATOS INVALIDOS';
-          userAccessData.message.content = 'Los datos ingresados NO cumplen con las condiciones'
         }
       }
     }
-    else
-    {
-      userAccessData.message.header = 'DATOS INVALIDOS';
-      userAccessData.message.content = 'Los datos ingresados NO cumplen con las condiciones'
-    }
 
+    return formStatus;
+  }
+
+  public submitData()
+  {
+    const userAccessData : MyFormResponse<UserAccessData> = {} as MyFormResponse<UserAccessData>;
+
+    userAccessData.status = this.validateData();
     userAccessData.data = this.loginForm.value;
     userAccessData.data.isLogin = this.isLogin;
-    userAccessData.dataIsValid = isDataValid;
 
     this.submitDataEventEmitter.emit(userAccessData);
   }

@@ -4,10 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EntryPageRoutingModule } from './entry-routing.module';
+import { StorePageRoutingModule } from './store-routing.module';
 
-import { EntryPage } from './entry.page';
-import { AuthModule } from '../../auth.module';
+import { StorePage } from './store.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
@@ -15,10 +14,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    EntryPageRoutingModule,
-    AuthModule,
+    StorePageRoutingModule,
     SharedModule
   ],
-  declarations: [EntryPage]
+  declarations: [StorePage]
 })
-export class EntryPageModule {}
+export class StorePageModule {}

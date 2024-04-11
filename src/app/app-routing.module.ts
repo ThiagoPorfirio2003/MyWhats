@@ -12,8 +12,8 @@ const routes: Routes = [
     loadChildren: () => import('./auth/page/entry/entry.module').then( m => m.EntryPageModule)
   },
   {
-    path: 'principal',
-    loadChildren: () => import('./principal/page/principal/principal.module').then( m => m.PrincipalPageModule)
+    path: 'navigation',
+    loadChildren: () => import('./navigation/page/navigation/navigation.module').then( m => m.NavigationPageModule)
   }
 ];
 

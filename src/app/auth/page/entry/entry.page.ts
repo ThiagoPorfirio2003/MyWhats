@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { addIcons } from 'ionicons';
 import { magnetSharp } from 'ionicons/icons';
-import { MyMessage } from 'src/app/core/models/message.model';
-import { MyOutPutData } from 'src/app/core/models/outPutInfo.model';
+import { MyFormResponse } from 'src/app/core/models/form.model';
+import { MyStatus } from 'src/app/core/models/status.model';
 import { UserAccessData, UserModel, UserPersonalData } from 'src/app/core/models/user.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { DatabaseService } from 'src/app/core/services/database.service';
 import { UtilsService } from 'src/app/core/services/utils.service';
+import { HeaderComponent } from 'src/app/shared/header/header.component';
 
 @Component({
   selector: 'app-entry',
@@ -28,16 +29,16 @@ export class EntryPage{
     this.showAccessDataForm = true;
   }
 
-  public async receiveAccessData(userAccessData : MyOutPutData<UserAccessData>)
+  public async receiveAccessData(userAccessData : MyFormResponse<UserAccessData>)
   {
     let showAlert : boolean;
 
-    showAlert = false;
+    showAlert = true;
 
-    if(userAccessData.dataIsValid)
+    if(userAccessData.status.success)
     {
       const loading = await this.utilsServices.getLoadingCtrl('circular');
-      const alertMessage : MyMessage = {} as MyMessage;
+      const alertMessage : MyStatus = {};
 
       await loading.present();
 
@@ -53,39 +54,32 @@ export class EntryPage{
           {
             if(userCredential.user.emailVerified)
             {
-              alertMessage.header = 'Felicidades';
-              alertMessage.content = 'Haz iniciado sesion correctamente';
-              showAlert = true;
-
-              const usuario : UserModel = doc.data() as UserModel;
-              console.log(usuario);
+              showAlert = false;
+              this.authService.logMyUser(doc.data() as UserModel);
+              this.utilsServices.changeRoute('/navigation');
             }
             else
             {
               alertMessage.header = 'Mail no verificado';
-              alertMessage.content = 'Revise su mail en busqueda del correo de verificacion';
-              showAlert = true;
+              alertMessage.message = 'Revise su mail en busqueda del correo de verificacion';
             }
           }
           else
           {
             alertMessage.header = 'Registro incompleto';
-            alertMessage.content = 'Faltan los datos personales del usuario';
-
-            showAlert = true;
+            alertMessage.message = 'Faltan los datos personales del usuario';
             this.showAccessDataForm = false;
           }
         }
         catch(error : any)
         {          
-          showAlert = true;
           alertMessage.header = error.code;
         }
         finally
         {
           if(showAlert)
           {
-            this.utilsServices.getAlert(alertMessage)
+            this.utilsServices.getAlert({header: alertMessage.header, message: alertMessage.message, buttons:['ok']})
             .then((myAlert)=>
             {
               loading.dismiss();
@@ -104,38 +98,38 @@ export class EntryPage{
         .then(()=>
         {
           loading.dismiss();
-          this.utilsServices.showAlert({header:'Completa el registro', content:'Ahora solo fantan tus datos personales'})
+          this.utilsServices.showAlert({header:'Completa el registro', message:'Ahora solo fantan tus datos personales',buttons:['ok']})
           this.showAccessDataForm = false;
         })
         .catch((error)=>this.utilsServices.showAlert({header: error.code}))
       }
     }
     else
-    {
-      this.utilsServices.showToast(userAccessData.message, 4000, 'bottom');
+    {  
+      this.utilsServices.showToast({header: userAccessData.status.header, message: userAccessData.status.message, position: 'bottom',duration: 4000});
     }
   }
 
-  public async receivePersonalData(personalDataPackage : MyOutPutData<UserPersonalData>)
+  public async receivePersonalData(formResponse : MyFormResponse<UserPersonalData>)
   {
-    if(personalDataPackage.dataIsValid)
+    if(formResponse.status.success)
     {
       const loading = await this.utilsServices.getLoadingCtrl('circular');
       
       await loading.present();
 
-      const authUser : User = this.authService.getCurrentUser()!;
+      const authUser : User = this.authService.getAuthUser()!;
 
       try
       {
-        const newUser = await this.saveUserData(personalDataPackage.data, authUser.uid, authUser.email!);
+        const newUser = await this.saveUserData(formResponse.data, authUser.uid, authUser.email!);
 
         this.authService.updateUserProfile(authUser, newUser.userName, newUser.image.url);
 
         await this.authService.sendEmailVerification()
 
         loading.dismiss();
-        this.utilsServices.showAlert({header:'Registro terminado', content:'Ahora solo falta verificar tu cuenta via tu mail'})
+        this.utilsServices.showAlert({header:'Registro terminado', message:'Ahora solo falta verificar tu cuenta via tu mail'})
         
         this.showAccessDataForm = true;
       }
@@ -147,7 +141,7 @@ export class EntryPage{
     }
     else
     {
-      this.utilsServices.showToast(personalDataPackage.message, 4000, 'bottom', 'toast-custom-class');
+      this.utilsServices.showToast({header: formResponse.status.header, message: formResponse.status.message, position: 'bottom', duration: 4000});
     }
   }
 

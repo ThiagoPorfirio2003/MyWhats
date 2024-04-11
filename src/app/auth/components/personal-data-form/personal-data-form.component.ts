@@ -2,7 +2,8 @@ import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { saveOutline } from 'ionicons/icons';
-import { MyOutPutData } from 'src/app/core/models/outPutInfo.model';
+import { MyFormResponse } from 'src/app/core/models/form.model';
+import { MyStatus } from 'src/app/core/models/status.model';
 import { UserPersonalData } from 'src/app/core/models/user.model';
 
 @Component({
@@ -13,13 +14,13 @@ import { UserPersonalData } from 'src/app/core/models/user.model';
 export class PersonalDataFormComponent {
 
   public userPersonalDataForm : FormGroup;
-  @Output() submitDataEvetEmiter : EventEmitter<MyOutPutData<UserPersonalData>>;
+  @Output() submitDataEvetEmiter : EventEmitter<MyFormResponse<UserPersonalData>>;
 
   constructor() 
   { 
     addIcons({saveOutline});
 
-    this.submitDataEvetEmiter = new EventEmitter<MyOutPutData<UserPersonalData>>();
+    this.submitDataEvetEmiter = new EventEmitter<MyFormResponse<UserPersonalData>>();
 
     this.userPersonalDataForm = inject(FormBuilder).group({
       realName: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(40), Validators.pattern("[a-zA-Z ]*"), this.hayEspacioInicial]],
@@ -44,21 +45,20 @@ export class PersonalDataFormComponent {
 
   public submitData()
   {
-    let myUserFormData : MyOutPutData<UserPersonalData> = {} as MyOutPutData<UserPersonalData>;
+    const formStatus : MyFormResponse<UserPersonalData> = {} as MyFormResponse<UserPersonalData>;
+    const statusResponse : MyStatus = {header: 'DATOS INVALIDOS', message: 'Los datos ingresados NO cumplen con las condiciones', success: this.userPersonalDataForm.valid};
 
-    myUserFormData.dataIsValid = this.userPersonalDataForm.valid;
-    myUserFormData.data = this.userPersonalDataForm.value;
-    myUserFormData.data.image = {path:'', url:''};
+    formStatus.data = this.userPersonalDataForm.value;
+    formStatus.data.image = {path:'', url:''};
 
-    if(myUserFormData.dataIsValid)
+    if(statusResponse.success)
     {
-      myUserFormData.message = {header: 'EXITO', content: 'Los datos ingresados cumplen con las condiciones'};
-    }
-    else
-    {
-      myUserFormData.message = {header: 'DATOS INVALIDOS', content: 'Los datos ingresados NO cumplen con las condiciones'};
+      statusResponse.header = 'EXITO'
+      statusResponse.message = 'Los datos ingresados cumplen con las condiciones'
     }
 
-    this.submitDataEvetEmiter.emit(myUserFormData)
+    formStatus.status = statusResponse;
+
+    this.submitDataEvetEmiter.emit(formStatus)
   }
 }

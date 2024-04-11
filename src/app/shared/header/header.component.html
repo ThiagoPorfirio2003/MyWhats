@@ -1,0 +1,11 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" style="padding-right: 5px;">
+      <ion-title class="title">{{this.title}}</ion-title>
+      @if(this.authService.isLogued) 
+      {
+        <ion-button color="light" color="danger" shape="round" slot="end" (click)="this.signOut()">
+          Cerrar sesion
+        </ion-button>
+      }
+  </ion-toolbar>
+</ion-header>
